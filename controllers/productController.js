@@ -18,7 +18,10 @@ exports.createProduct = async (req, res) => {
 
 exports.getProducts = async (req, res) => {
   try {
-    const products = await Product.find({isActive:true});
+    const products = await Product.find({
+      isActive: true,
+      quantity: { $gt: 0 }
+    });
     if (products.length == 0) {
       return res.status(400).json({ message: "No products found" });
     }
@@ -43,9 +46,9 @@ exports.getProductById = async (req, res) => {
       .status(500)
       .json({ error: err, message: "Internal Server Error" });
   }
-}
+};
 
-exports.deleteProduct = async (req,res) => {
+exports.deleteProduct = async (req, res) => {
   try {
     const productId = req.params.id;
     const product = await Product.findByIdAndDelete(productId);
@@ -58,4 +61,42 @@ exports.deleteProduct = async (req,res) => {
       .status(500)
       .json({ error: err, message: "Internal Server Error" });
   }
-}
+};
+
+exports.updateProduct = async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const updatedProduct = await Product.findByIdAndUpdate(productId, req.body);
+    if (!updatedProduct) {
+      return res
+        .status(400)
+        .json({ message: "Product updation failed/Invalid Id" });
+    }
+    return res.status(200).json({ message: "Product updated successfully" });
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ error: err, message: "Internal Server Error" });
+  }
+};
+
+exports.updateQuantity = async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const { quantityDecrease } = req.body;
+    const updatedProduct = await Product.findByIdAndUpdate(productId, {
+      $inc: { quantity: -quantityDecrease }
+    });
+    if (!updatedProduct) {
+      return res
+        .status(400)
+        .json({ message: "Quantity updation failed/Invalid Id" });
+    }
+    return res.status(200).json({ message: "Quantity updated successfully" });
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ error: err, message: "Internal Server Error" });
+  }
+};
+
