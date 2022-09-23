@@ -18,10 +18,12 @@ exports.createProduct = async (req, res) => {
 
 exports.getProducts = async (req, res) => {
   try {
+    // category.findById(id)
     const products = await Product.find({
       isActive: true,
       quantity: { $gt: 0 }
-    });
+    }).populate("category", "name")
+    .populate("bought_by", "firstname email");
     if (products.length == 0) {
       return res.status(400).json({ message: "No products found" });
     }
@@ -100,3 +102,22 @@ exports.updateQuantity = async (req, res) => {
   }
 };
 
+exports.productSold = async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const updatedProduct = await Product.findByIdAndUpdate(productId, {
+      $inc: { quantity: -1 },
+      $push: { bought_by: req.body.userId }
+    });
+    if (!updatedProduct) {
+      return res
+        .status(400)
+        .json({ message: "Product updation failed/Invalid Id" });
+    }
+    return res.status(200).json({ message: "Product updated successfully" });
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ error: err, message: "Internal Server Error" });
+  }
+};
