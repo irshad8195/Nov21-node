@@ -1,8 +1,9 @@
 const express = require("express");
 const app = express();
 const port = 8000;
-const bodyParser = require("body-parser");
-const db = require("./config/mongoose")
+const db=require('./config/mongoose')
+//const bodyParser = require("body-parser");
+//app.use(bodyParser.urlencoded({ extended: true }));
 const userRoutes = require("./routes/userRoutes")
 const productRoutes = require("./routes/productRoutes")
 const categoryRoutes = require("./routes/categoryRoutes")
@@ -10,10 +11,13 @@ const cors = require("cors");
 var corsOptions = {
   origin: "*"
 };
+app.use(express.urlencoded())
+app.use(express.json())
+//app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cors(corsOptions));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: true }));
+//app.use(bodyParser.json());
 app.use('/user', userRoutes);
 app.use('/product', productRoutes);
 app.use('/category', categoryRoutes);

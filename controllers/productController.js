@@ -37,6 +37,7 @@ exports.getProducts = async (req, res) => {
 
 exports.getProductById = async (req, res) => {
   try {
+    console.log(req.params)
     const productId = req.params.id;
     const product = await Product.findById(productId);
     if (!product) {
@@ -82,42 +83,42 @@ exports.updateProduct = async (req, res) => {
   }
 };
 
-exports.updateQuantity = async (req, res) => {
-  try {
-    const productId = req.params.id;
-    const { quantityDecrease } = req.body;
-    const updatedProduct = await Product.findByIdAndUpdate(productId, {
-      $inc: { quantity: -quantityDecrease }
-    });
-    if (!updatedProduct) {
-      return res
-        .status(400)
-        .json({ message: "Quantity updation failed/Invalid Id" });
-    }
-    return res.status(200).json({ message: "Quantity updated successfully" });
-  } catch (err) {
-    return res
-      .status(500)
-      .json({ error: err, message: "Internal Server Error" });
-  }
-};
+// exports.updateQuantity = async (req, res) => {
+//   try {
+//     const productId = req.params.id;
+//     const { quantityDecrease } = req.body;
+//     const updatedProduct = await Product.findByIdAndUpdate(productId, {
+//       $inc: { quantity: -quantityDecrease }
+//     });
+//     if (!updatedProduct) {
+//       return res
+//         .status(400)
+//         .json({ message: "Quantity updation failed/Invalid Id" });
+//     }
+//     return res.status(200).json({ message: "Quantity updated successfully" });
+//   } catch (err) {
+//     return res
+//       .status(500)
+//       .json({ error: err, message: "Internal Server Error" });
+//   }
+// };
 
-exports.productSold = async (req, res) => {
-  try {
-    const productId = req.params.id;
-    const updatedProduct = await Product.findByIdAndUpdate(productId, {
-      $inc: { quantity: -1 },
-      $push: { bought_by: req.body.userId }
-    });
-    if (!updatedProduct) {
-      return res
-        .status(400)
-        .json({ message: "Product updation failed/Invalid Id" });
-    }
-    return res.status(200).json({ message: "Product updated successfully" });
-  } catch (err) {
-    return res
-      .status(500)
-      .json({ error: err, message: "Internal Server Error" });
-  }
-};
+// exports.productSold = async (req, res) => {
+//   try {
+//     const productId = req.params.id;
+//     const updatedProduct = await Product.findByIdAndUpdate(productId, {
+//       $inc: { quantity: -1 },
+//       $push: { bought_by: req.body.userId }
+//     });
+//     if (!updatedProduct) {
+//       return res
+//         .status(400)
+//         .json({ message: "Product updation failed/Invalid Id" });
+//     }
+//     return res.status(200).json({ message: "Product updated successfully" });
+//   } catch (err) {
+//     return res
+//       .status(500)
+//       .json({ error: err, message: "Internal Server Error" });
+//   }
+// };
